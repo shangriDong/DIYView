@@ -5,9 +5,12 @@ import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by Cmad on 2015/11/17.
@@ -46,8 +49,11 @@ public class CustomLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        //测量子view的宽高
+        measureChildren(widthMeasureSpec, heightMeasureSpec);
         int childCount = getChildCount();
         int w = MeasureSpec.getSize(widthMeasureSpec);
+        Log.d(TAG, "onMeasure: widthMeasureSpec = " + w + " heightMeasureSpec = " + heightMeasureSpec);
         if (childCount == 2) {
             TextView tv = null;
             if(getChildAt(0) instanceof  TextView){
@@ -59,10 +65,10 @@ public class CustomLayout extends ViewGroup {
 
             View sencodView = getChildAt(1);
 
-            //测量子view的宽高
-            measureChildren(widthMeasureSpec, heightMeasureSpec);
+
 
             //两个子view宽度相加小于该控件宽度的时候
+            Log.d(TAG, "tv.width = " + tv.getMeasuredWidth() + " sencodView = " + sencodView.getMeasuredWidth());
             if (tv.getMeasuredWidth() + sencodView.getMeasuredWidth() <= w) {
                 int width = tv.getMeasuredWidth()+sencodView.getMeasuredWidth();
                 //计算高度
@@ -87,12 +93,11 @@ public class CustomLayout extends ViewGroup {
         } else {
             throw new RuntimeException("CustomLayout child count must is 2");
         }
-
-
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.d(TAG, "onLayout: type = " + type);
         if (type == SINGLE_LINE || type == MULTI_LINE) {
             TextView tv = (TextView) getChildAt(0);
             View v1 = getChildAt(1);
@@ -106,6 +111,8 @@ public class CustomLayout extends ViewGroup {
             if(v1.getMeasuredHeight() < lastLineHeight){
                 top = lastLineTop + (lastLineHeight - v1.getMeasuredHeight())/2;
             }
+            Log.d(TAG, " left = " + left + " top = " + top + " left = " + " v1.getMeasuredWidth() = " + v1.getMeasuredWidth()
+            + " v1.getMeasuredHeight() = " + v1.getMeasuredHeight());
             v1.layout(left, top, left + v1.getMeasuredWidth(), top+v1.getMeasuredHeight());
         } else if (type == NEXT_LINE) {
             View v0 = getChildAt(0);
@@ -125,9 +132,11 @@ public class CustomLayout extends ViewGroup {
      */
     private void initTextParams(CharSequence text, int maxWidth, TextPaint paint) {
         StaticLayout staticLayout = new StaticLayout(text, paint, maxWidth, Layout.Alignment.ALIGN_NORMAL, 1.0f, 0.0f, false);
+        Log.d(TAG, "text = " + text  + " maxWidth = " + maxWidth);
         int lineCount = staticLayout.getLineCount();
         lastLineTop = staticLayout.getLineTop(lineCount - 1);
         lastLineRight = staticLayout.getLineRight(lineCount - 1);
+        Log.d(TAG, "lineCount = " + lineCount + " lastLineTop = " + lastLineTop + " lastLineRight = " + lastLineRight);
     }
 
 }

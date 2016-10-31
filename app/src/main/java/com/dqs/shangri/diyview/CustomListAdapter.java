@@ -48,6 +48,7 @@ public class CustomListAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.item, null);
             listViewHolder = new ListViewHolder((CustomLayout) convertView);
             convertView.setTag(listViewHolder);
+            listViewHolder.textView.setText(getItem(position).text);
         }
         return convertView;
     }

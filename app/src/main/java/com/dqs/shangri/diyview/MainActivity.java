@@ -29,6 +29,6 @@ public class MainActivity extends AppCompatActivity {
             list.add(new ListBean("qsdfasdadasdasdsadasdasdasdasdasdasdasdasdasd"));
         }
 
-        customListAdapter.notifyDataSetChanged();
+        customListAdapter.notifyDataSetInvalidated();
     }
 }
